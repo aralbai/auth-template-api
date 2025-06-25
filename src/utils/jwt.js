@@ -1,15 +1,15 @@
 import jwt from "jsonwebtoken";
 
-const ACCES_SECRET = process.env.ACCES_SECRET;
-const REFRESH_SECRET = process.env.REFRESH_SECRET;
-
 export const generateAccessToken = ({ userId, role }) => {
+  const ACCESS_SECRET = process.env.ACCESS_SECRET;
+  if (!process.env.ACCESS_SECRET) throw new Error("ACCESS_SECRET is missing");
+
   return jwt.sign(
     {
       userId,
       role,
     },
-    ACCES_SECRET,
+    ACCESS_SECRET,
     {
       expiresIn: "15m",
     }
@@ -17,6 +17,12 @@ export const generateAccessToken = ({ userId, role }) => {
 };
 
 export const generateRefreshToken = ({ userId }) => {
+  const REFRESH_SECRET = process.env.REFRESH_SECRET;
+  if (!REFRESH_SECRET) {
+    if (!process.env.REFRESH_SECRET)
+      throw new Error("REFRESH_SECRET is missing");
+  }
+
   return jwt.sign(
     {
       userId,
